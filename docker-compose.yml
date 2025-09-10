@@ -1,0 +1,7 @@
+services:
+  regression:
+    build:
+      context: .
+    volumes:
+      - ./data:/service/data
+      - ~/mosek:/root/mosek:ro
