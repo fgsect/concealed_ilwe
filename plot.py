@@ -15,7 +15,7 @@ def plot(level):
 	contaminations.sort()
 
 	min_m_ILP = [min((row[0] for row in data if row[3] is not None and row[3]/row[2] >= 0.95 and row[1] == p), default = None) for p in contaminations]
-	#min_m_L1  = [min((row[0] for row in data if row[4] is not None and row[4]/row[2] >= 0.95 and row[1] == p), default = None) for p in contaminations]
+	min_m_L1  = [min((row[0] for row in data if row[4] is not None and row[4]/row[2] >= 0.95 and row[1] == p), default = None) for p in contaminations]
 	min_m_hub = [min((row[0] for row in data if row[5] is not None and row[5]/row[2] >= 0.95 and row[1] == p), default = None) for p in contaminations]
 	min_m_cau = [min((row[0] for row in data if row[6] is not None and row[6]/row[2] >= 0.95 and row[1] == p), default = None) for p in contaminations]
 	min_m_L2  = [min((row[0] for row in data if row[7] is not None and row[7]/row[2] >= 0.95 and row[1] == p), default = None) for p in contaminations]
@@ -23,13 +23,13 @@ def plot(level):
 	plt.yscale('log', base = 2)
 	plt.xticks([x/10 for x in range(10)])
 	plt.plot(contaminations, min_m_ILP, 'o-', label = 'ILP')
-	#plt.plot(contaminations, min_m_L1 , 'd-', label = 'L1')
+	plt.plot(contaminations, min_m_L1 , 'd-', label = 'L1')
 	plt.plot(contaminations, min_m_hub, 'v-', label = 'Huber')
 	plt.plot(contaminations, min_m_cau, 's-', label = 'Cauchy')
 	plt.plot(contaminations, min_m_L2 , '^-', label = 'L2')
 	plt.xlabel('concealment rate')
 	plt.ylabel('no. of measurements')
 	plt.legend()
-	plt.title(F'Measurements for NIST Level {level}')
-	plt.savefig(F'NIST{level}.pdf')
+	plt.title(f'Measurements for NIST Level {level}')
+	plt.savefig(f'data/NIST{level}.pdf')
 	plt.close()

@@ -9,13 +9,14 @@ import cvxpy as cvx
 import mosek
 from tabulate import tabulate
 from sklearn.linear_model import LinearRegression
+import argparse
 
 from sampler import generate_sample
 from plot import plot
 warnings.filterwarnings("ignore")
 
 # PARAMS
-VERBOSE = True
+VERBOSE = False
 TIMEOUT = 120
 ATTEMPTS = 100
 SUCCESS_THRESHOLD = 0.95
@@ -39,20 +40,23 @@ class ILWE():
 	def timer(f):
 		"""Wrapper for optimisation methods."""
 		def inner(self):
+			function_name = str(f).split()[1].split('.')[1]
 			t0 = time.time()
 			try:
 				s = f(self)
 			except Exception as err:
-				print('failed to solve via ', f)
-				print(repr(err))
+				self.log.append((time.time(), 'failed to solve via ', function_name))
+				self.log.append((time.time(), repr(err)))
 				s = None
 			t = time.time() - t0
 			solved = s is not None and bool((s == self.s).all())
-			self.solutions[f] = (t, solved)
+			matching_bits = np.count_nonzero(s == self.s) if s is not None else 0
+			# store relevant data of the solution
+			self.solutions[function_name] = (t, solved, matching_bits, s)
 			return s,t,solved
 		return inner
 
-	def __init__(self, m, n, eta, tau, p, seed = None):
+	def __init__(self, m, p, n = DIMENSION, eta = ETA, tau = TAU, seed = None):
 		"""Create instance for CILWE
 
 		Input:
@@ -69,11 +73,10 @@ class ILWE():
 		self.n = n
 		self.eta = eta
 		self.tau = tau
-		self.log = {}
-		self.solutions = {}
-		#methods that usually run into the timeout are commented out
+		self.log = []
+		self.solutions = {} # dictionary method-name -> soltuion data
 		self.methods = {
-				#'ILP': self.ILP,
+				'ILP': self.ILP, # comment out ILP to speed up the overall process
 				'L1': self.L1,
 				'L2': self.L2,
 				'huber': self.huber,
@@ -82,8 +85,8 @@ class ILWE():
 
 		if seed is not None:
 			np.random.seed(seed)
-		self.C, self.z, self.e, self.s = generate_sample(m, tau, p, dim = DIMENSION, eta = ETA, filterthresh = TAU)
-		self.k = int((self.e != 0).sum())
+		self.C, self.z, self.e, self.s = generate_sample(m, tau, p, dim = n, eta = eta, filterthresh = tau)
+		self.k = int((self.e != 0).sum()) # number of errors
 
 	@timer
 	def L1(self):
@@ -127,10 +130,10 @@ class ILWE():
 		"""
 		lr = LinearRegression(n_jobs=1)
 		convergence_counter = 0
-		n = len(b)
 		start = time.time()
 		A = self.C
 		b = self.z
+		n = len(b)
 		beta = self.s
 
 		weights = np.ones(n) / n
@@ -163,7 +166,7 @@ class ILWE():
 
 			if correct_predictions==256 or convergence_counter >= convergence_min_run: break
 			if time.time() - start >= TIMEOUT: break
-		print(f'Cauchy: {t} iterations')
+		self.log.append((time.time(), f'Cauchy: {t} iterations'))
 		return np.array(beta_est.round(), dtype = np.int64)
 
 	@timer
@@ -184,11 +187,11 @@ class ILWE():
 			prob.solve(solver = cvx.MOSEK, mosek_params={mosek.dparam.optimizer_max_time: TIMEOUT}, verbose = VERBOSE)
 			return np.array(s.value.round(), dtype = np.int64)
 		except cvx.SolverError:
-			print('ILP timeout')
+			self.log.append((time.time(),'ILP timeout'))
 
-	def print(self):
-		"""Print table of all computed results."""
-		print(tabulate([[name] + list(values) for name, values in self.solutions.items()],['method', 'time', 'solved'], tablefmt = 'grid'))
+	def __str__(self):
+		"""create table of all computed results."""
+		return tabulate([(name, t, solved, bits) for name, (t, solved, bits, _) in self.solutions.items()],['method', 'time', 'solved', 'correct bits'], tablefmt = 'grid')
 
 def run_method(n, m, p, eta, tau, cursor, conn, method : str):
 	"""Get the instance with given parameters from DB and run given method on it."""
@@ -211,7 +214,7 @@ def get_instance(m, n, eta, tau, p, seed, cursor, conn):
 	"""Return ID and instance of the chosen parameters
 
 	create and insert into DB if none existed before"""
-	instance = ILWE(m, n, eta, tau, p, seed)
+	instance = ILWE(m, p, n = n, eta = eta, tau = tau, seed = seed)
 	cursor.execute('select rowid from instance where m = ? and n = ? and p = ? and eta = ? and tau = ? and seed = ?;', (m, n, p, eta, tau, seed))
 	instance_id = cursor.fetchone()
 	if instance_id is not None: return instance_id[0], instance
@@ -226,7 +229,7 @@ def run_all():
 	cursor = conn.cursor()
 
 	# dictionary for all methods with their ID in database
-	dummy_instance = ILWE(300, 256, 39, 2, 0.3, 0)
+	dummy_instance = ILWE(300, 0.05, DIMENSION, ETA, TAU, 0)
 	active_methods = list(dummy_instance.methods.keys())
 	cursor.execute('select rowid, name from method;')
 	methods = {name: ID for ID,name in cursor.fetchall() if name in active_methods}
