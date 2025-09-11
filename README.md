@@ -4,10 +4,11 @@ Solving Concealed Integer LWE with Robust Regressions
 This is Code for the AsiaCrypt paper (Damm et al., AsiaCrypt 2025).
 
 # Installation/Usage
-Both options require [Mosek](https://www.mosek.com/) as a solver. This solver is commercial, but offers free academic licences.
+The experiment was originally run with [Mosek](https://www.mosek.com/) as a solver. This solver is commercial, but offers free academic licences.
+We included a version with free solvers, that may yields slightly different results.
 
 ## Docker
-* ensure that your Mosek licence is in the folder `~/mosek`, or adjust the `docker-compose.yml`
+* OPTIONAL: ensure that your Mosek licence is in the folder `~/mosek`, or adjust the `docker-compose.yml`
 * call `docker compose up --build -d` to start/resume the large scale experiment for NIST-level 2
   Note that this takes SEVERAL DAYS to finish.
 * call `docker compose down` to stop/interrupt the experiment

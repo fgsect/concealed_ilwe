@@ -1,6 +1,7 @@
 """
 Regression methods to retrieve the secret key of CILWE (concealed integer learning-with-errors)
 """
+import os
 import time
 import warnings
 import sqlite3
@@ -9,11 +10,11 @@ import cvxpy as cvx
 import mosek
 from tabulate import tabulate
 from sklearn.linear_model import LinearRegression
-import argparse
 
 from sampler import generate_sample
 from plot import plot
 warnings.filterwarnings("ignore")
+MOSEK_FLAG = os.path.isfile('~/mosek/mosek.lic')
 
 # PARAMS
 VERBOSE = False
@@ -94,7 +95,10 @@ class ILWE():
 		s = cvx.Variable(self.n)
 		e = cvx.Variable(self.m)
 		prob = cvx.Problem(cvx.Minimize(cvx.norm(e,1)), [-self.eta <= s, s <= self.eta, self.C @ s == self.z - e])
-		prob.solve()
+		if MOSEK_FLAG:
+			prob.solve(solver = cvx.MOSEK, mosek_params={mosek.dparam.optimizer_max_time: TIMEOUT}, verbose = VERBOSE)
+		else:
+			prob.solve(solver = cvx.SCIPY, scipy_options = {'disp':VERBOSE, 'time_limit':TIMEOUT})
 		return np.array(s.value.round(), dtype = np.int64)
 
 	@timer
@@ -109,7 +113,10 @@ class ILWE():
 		s = cvx.Variable(self.n)
 		e = cvx.Variable(self.m)
 		prob = cvx.Problem(cvx.Minimize(cvx.sum(cvx.huber(e,M = HUBER_PARAM))), [-self.eta <= s, s <= self.eta, self.C @ s == self.z - e])
-		prob.solve()
+		if MOSEK_FLAG:
+			prob.solve(solver = cvx.MOSEK, mosek_params={mosek.dparam.optimizer_max_time: TIMEOUT}, verbose = VERBOSE)
+		else:
+			prob.solve(solver = cvx.CLARABEL, time_limit = TIMEOUT, verbose = VERBOSE)
 		return np.array(s.value.round(), dtype = np.int64)
 
 	@timer
@@ -184,7 +191,10 @@ class ILWE():
 		objective = cvx.Maximize(cvx.sum(e))
 		prob = cvx.Problem(objective, constraints)
 		try:
-			prob.solve(solver = cvx.MOSEK, mosek_params={mosek.dparam.optimizer_max_time: TIMEOUT}, verbose = VERBOSE)
+			if MOSEK_FLAG:
+				prob.solve(solver = cvx.MOSEK, mosek_params={mosek.dparam.optimizer_max_time: TIMEOUT}, verbose = VERBOSE)
+			else:
+				prob.solve(solver = cvx.SCIPY, scipy_options = {'disp': VERBOSE, 'time_limit': TIMEOUT})
 			return np.array(s.value.round(), dtype = np.int64)
 		except cvx.SolverError:
 			self.log.append((time.time(),'ILP timeout'))

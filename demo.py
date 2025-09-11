@@ -1,4 +1,6 @@
-import numpy as np
+"""
+Wrapper to use regression on Concealed Integer Learning with Errors.
+"""
 import argparse
 from regression import ILWE, run_all
 
