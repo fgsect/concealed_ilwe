@@ -7,23 +7,25 @@ The paper and BibTex is available at https://eprint.iacr.org/2025/1629
 
 # Installation/Usage
 The experiment was originally run with [Mosek](https://www.mosek.com/) as a solver. This solver is commercial, but offers free academic licences.
-We included a version with free solvers, that may yields slightly different results.
+We included a version with free solvers, that may yield slightly different results.
 
 ## Docker
 * OPTIONAL: ensure that your Mosek licence is in the folder `~/mosek`, or adjust the `docker-compose.yml`
-* call `docker compose up --build -d` to start/resume the large scale experiment for NIST-level 2
+* Call `docker compose up --build -d` to start/resume the large scale experiment for NIST-level 2.  
   Note that this takes SEVERAL DAYS to finish.
-* call `docker compose down` to stop/interrupt the experiment
-* at the end, the folder `data` contains a database with the results and a PDF with the plot
-* to run the experiment for other NIST-levels, change `NIST_LEVEL = 2` in `regression.py`
-* to manually use the code, enter the docker container via `docker compose exec regression bash` and just execute the code as desired
+* Call `docker compose down` to stop/interrupt the experiment.
+* At the end, the folder `data` contains a database with the results and a PDF with the plot.
+* To run the experiment for other NIST-levels, change `NIST_LEVEL = 2` in `regression.py`
+* To manually use the code, enter the docker container via `docker compose exec regression bash` and just execute the code as desired.
 
 ## Locally
-* install the requirements with any package manager you like. 
-* run `demo.py` with the desired parameters
-  * `python3 demo.py --p 0.07 --m 404` crates 404 equations with a contamination rate of 0.07.
+* Install the requirements with any package manager you like. 
+* Run `demo.py` with the desired parameters
+  * `python3 demo.py --p 0.07 --m 404`  
+  creates 404 equations with a contamination rate of 0.07.
     It calls all regressions methods and prints the results.
-  * `python3 demo.py --all` starts the full-scale experiment and plots the result. 
+  * `python3 demo.py --all`  
+  starts the full-scale experiment and plots the result. 
     Note that this takes SEVERAL DAYS to finish.
 
 # Included Methods
@@ -37,10 +39,12 @@ We included a version with free solvers, that may yields slightly different resu
 The simulation_umts24 file provides the code to generate the Dilithium signatures, simulate a Machine learning Classifier as described by UMTS24 and run the attack with robust regressions. 
 Note that this code needs to generate signatures and save them to disk, before the attack can take place.
 
-sample calls work like this:
+Sample calls work like this:
 
-for generation: python3 simulation_umts24.py --experiment generate --filterthresh 9 --threshold 900000 --verbose
+for generation:  
+`python3 simulation_umts24.py --experiment generate --filterthresh 9 --threshold 900000 --verbose`
 
-for soving: python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000
+for soving:  
+`python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000`
 
 
