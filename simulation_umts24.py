@@ -62,8 +62,11 @@ def filter(C,z,y):
 	mask = np.abs(z) <= FILTER_THRESH
 	return C[mask],z[mask],y[mask]
 
-def gen_filter(i):
+def gen_filter(i,verbose=False):
 	"""returns: list((C_0,z_0,y_0),(C_1,z_1,y_1),...)"""
+
+	if verbose:
+		print(i)
 	C,z,y = gen_sig(S1,PARAMS)
 	eq = list()
 	for l in range(PARAMS.l):
@@ -241,6 +244,8 @@ def irls(C,z,s,loss = "cauchy",iterations=100,huberparam = 0.125):
 ######## main ########
 
 if __name__ == '__main__':
+	if args.verbose:
+		print(args)
 
 	if args.experiment == "generate":
 		PARAMS = Parameters.get_nist_security_level(2)
@@ -282,7 +287,8 @@ if __name__ == '__main__':
 		HUBER_PARAM = args.huberparam
 		filepathwrite = args.filepath+"results"+str(args.tpr)+"_"+str(args.fpr)
 		log_to_file(filepathwrite,"repeat,l,no_sigs,num_eq,contamination,method,num_errors")	
-		print("hello")
+		if args.verbose:
+			print("hello")
 		for rep in range(args.repeat):
 			##load sigs
 			data_unbatched, s1 = load_sigs(rep,args.filepath)

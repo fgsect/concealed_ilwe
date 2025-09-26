@@ -34,3 +34,9 @@ We included a version with free solvers, that may yields slightly different resu
 # Simulation of full attack
 The simulation_umts24 file provides the code to generate the Dilithium signatures, simulate a Machine learning Classifier as described by UMTS24 and run the attack with robust regressions. 
 Note that this code needs to generate signatures and save them to disk, before the attack can take place.
+
+sample calls work like this:
+for generation: python3 simulation_umts24.py --experiment generate --filterthresh 9 --threshold 900000 --verbose
+for soving: python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000
+
+
