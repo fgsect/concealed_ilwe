@@ -1,7 +1,9 @@
-Solving Concealed Integer LWE with Robust Regressions
+Solving Concealed ILWE and its Application for Breaking Masked Dilithium
 ===
 
-This is Code for the AsiaCrypt paper (Damm et al., AsiaCrypt 2025).
+The paper will be published as AsiaCrypt 2025. 
+
+The paper and BibTex is available at https://eprint.iacr.org/2025/1629
 
 # Installation/Usage
 The experiment was originally run with [Mosek](https://www.mosek.com/) as a solver. This solver is commercial, but offers free academic licences.
@@ -36,7 +38,9 @@ The simulation_umts24 file provides the code to generate the Dilithium signature
 Note that this code needs to generate signatures and save them to disk, before the attack can take place.
 
 sample calls work like this:
+
 for generation: python3 simulation_umts24.py --experiment generate --filterthresh 9 --threshold 900000 --verbose
+
 for soving: python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000
 
 
