@@ -54,5 +54,5 @@ the paper's results. Further descriptions are found within the notebook and the 
 
 The target device's firmware, wrapping the attacked impconvBA64_rec() function can be found in attack/firmware/firmware.c.
 
-The C and C++ code of the data generator is found in attack/data_generator. To compile the dependencies [libnpy](https://github.com/llohse/libnpy) and [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) need to be installed into attack/data_generator/extern, this can be done from within the notebook. Build using cmake for specified security level (DILITHIUM_MODE) by executing `export DILITHIUM_MODE=<2,3,5> && ./attack/data_generator/build.sh`. The output data (format) is described within the notebook (Section 4).
+The C and C++ code of the data generator is found in attack/data_generator. To compile the dependencies [libnpy](https://github.com/llohse/libnpy) and [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) need to be installed into attack/data_generator/extern, this can be done from within the notebook. Build using cmake for specified security level (DILITHIUM_MODE) by executing `export DILITHIUM_MODE=<2,3,5> && ./attack/data_generator/build.sh`. The output data (format) is described within the notebook (Section 2.1).
 
