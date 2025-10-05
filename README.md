@@ -47,4 +47,12 @@ for generation:
 for soving:  
 `python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000`
 
+# Attack on masked Dilithium
+The jupyter notebook attack.ipynb contains the code to execute the attack against the first-order [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) [CGTZ23] for NIST security levels 2, 3 and 5 as described in the AsiaCrypt paper.
+Install dependencies from requirements_attack.txt to run the attack notebook. Within the notebook the attack data (power traces, classifier, signature data) as used in the paper may be downloaded to reproduce
+the paper's results. Further descriptions are found within the notebook and the helper scripts inside attack.
+
+The target device's firmware, wrapping the attacked impconvBA64_rec() function can be found in attack/firmware/firmware.c.
+
+The C and C++ code of the data generator is found in attack/data_generator. To compile the dependencies [libnpy](https://github.com/llohse/libnpy) and [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) need to be installed into attack/data_generator/extern, this can be done from within the notebook. Build using cmake for specified security level (DILITHIUM_MODE) by executing `export DILITHIUM_MODE=<2,3,5> && ./attack/data_generator/build.sh`. The output data (format) is described within the notebook (Section 4).
 

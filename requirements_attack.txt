@@ -1,0 +1,9 @@
+notebook==7.4.7
+matplotlib==3.10.6
+tensorflow==2.20.0
+tqdm==4.67.1
+scikit-learn==1.6.1
+scalib==0.6.4
+numpy==1.26.4
+cvxpy==1.7.3
+
