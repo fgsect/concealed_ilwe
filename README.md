@@ -5,11 +5,21 @@ The paper will be published as AsiaCrypt 2025.
 
 The paper and BibTex is available at https://eprint.iacr.org/2025/1629
 
-# Installation/Usage
+# Comparison of regression methods
+We investigated different regression methods for the Concealed Integer Learning with Errors (CILWE) problem.
+Given different error rates, we test how many samples an instance must contain to be most likely solvable.
+
 The experiment was originally run with [Mosek](https://www.mosek.com/) as a solver. This solver is commercial, but offers free academic licences.
 We included a version with free solvers, that may yield slightly different results.
 
-## Docker
+## Included Methods
+* Huber regression
+* Cauchy regression/Iterative Reweighted Least Squares
+* Ordinary least squares (OLS, L2-norm)
+* Least absolute deviation (LAD, L1-norm)
+* Integer linear programming (ILP)
+
+## Docker Usage [Recommended]
 * OPTIONAL: ensure that your Mosek licence is in the folder `~/mosek`, or adjust the `docker-compose.yml`
 * Call `docker compose up --build -d` to start/resume the large scale experiment for NIST-level 2.  
   Note that this takes SEVERAL DAYS to finish.
@@ -18,7 +28,7 @@ We included a version with free solvers, that may yield slightly different resul
 * To run the experiment for other NIST-levels, change `NIST_LEVEL = 2` in `regression.py`
 * To manually use the code, enter the docker container via `docker compose exec regression bash` and just execute the code as desired.
 
-## Locally
+## Local Usage
 * Install the requirements with any package manager you like. 
 * Run `demo.py` with the desired parameters
   * `python3 demo.py --p 0.07 --m 404`  
@@ -27,13 +37,6 @@ We included a version with free solvers, that may yield slightly different resul
   * `python3 demo.py --all`  
   starts the full-scale experiment and plots the result. 
     Note that this takes SEVERAL DAYS to finish.
-
-# Included Methods
-* Huber regression
-* Cauchy regression/Iterative Reweighted Least Squares
-* Ordinary least squares (OLS, L2-norm)
-* Least absolute deviation (LAD, L1-norm)
-* Integer linear programming (ILP)
 
 # Simulation of full attack
 The simulation_umts24 file provides the code to generate the Dilithium signatures, simulate a Machine learning Classifier as described by UMTS24 and run the attack with robust regressions. 
