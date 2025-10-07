@@ -172,7 +172,6 @@ def load_sigs(i,filepath):
 	with open(filepath+".pkl","rb") as f1:
 		data = pickle.load(f1)
 
-	#data_unbatched =[sig for batch in data for sig in batch]
 	data_unbatched = data
 	return data_unbatched , key
 
@@ -184,7 +183,7 @@ def run_attack(PARAMS,CsSel,zsSel,ysSel,S1,methods,repeat,nosigs,filepath,verbos
 			if meth == "cauchy":
 				shat,_ = irls(C=CsSel[l],z=zsSel[l],s=S1[l],loss="cauchy",iterations=30)
 			if meth == "huber":
-				#solved with irls to make this experiment independent of mosek license.
+				#solved with irls to to have less package dependencies
 				shat,_ = irls(C=CsSel[l],z=zsSel[l],s=S1[l],loss="huber",iterations=30,huberparam = HUBER_PARAM)
 
 			#logging results
@@ -256,23 +255,6 @@ if __name__ == '__main__':
 			final_results = list()
 			step = range(args.threshold)
 			final_results = list(map(gen_filter,step))
-
-			# for i in range(0,args.threshold,args.stepsize):
-			#	 if args.verbose:
-			#		 print(rep,i,args.threshold)
-
-			#	 step = range(args.stepsize)
-			#	 if args.single_threadded:
-			#		 #single threaded for debugging
-			#		 results = list(map(gen_filter,step))
-			#		 #[print(r) for r in results]
-
-			#	 else:
-			#		 raise ValueError("fail.")
-			#		 with concurr.ProcessPoolExecutor(max_workers=args.cores) as executor:
-			#			 results = list(executor.map(gen_filter,step))
-
-			#	 final_results.append(results)
 
 			with open(args.filepath+str(rep)+".pkl","wb") as f1:
 				pickle.dump(final_results,f1)
