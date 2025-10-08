@@ -51,8 +51,8 @@ for soving:
 `python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000`
 
 # Attack on masked Dilithium
-The jupyter notebook attack.ipynb contains the code to execute the attack against the first-order [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) [CGTZ23] for NIST security levels 2, 3 and 5 as described in the AsiaCrypt paper.
-Install dependencies from requirements_attack.txt to run the attack notebook. Within the notebook the attack data (power traces, classifier, signature data) as used in the paper may be downloaded to reproduce
+The jupyter notebook attack.ipynb and additional scripts in attack/* contain the code to execute the attack against the first-order [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) [CGTZ23] for NIST security levels 2, 3 and 5 as described in the AsiaCrypt paper.
+Install dependencies from requirements_attack.txt to run the attack notebook. Within the notebook the [attack data](https://zenodo.org/records/17291471) (power traces, classifier, signature data) as used in the paper may be downloaded to reproduce
 the paper's results. Further descriptions are found within the notebook and the helper scripts inside attack.
 
 The target device's firmware, wrapping the attacked impconvBA64_rec() function can be found in attack/firmware/firmware.c.
