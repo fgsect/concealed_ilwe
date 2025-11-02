@@ -21,6 +21,7 @@ We included a version with free solvers, that may yield slightly different resul
 
 ## Docker Usage [Recommended]
 * OPTIONAL: ensure that your Mosek licence is in the folder `~/mosek`, or adjust the `docker-compose.yml`
+* Go to the folder `regression`.
 * Call `docker compose up --build -d` to start/resume the large scale experiment for NIST-level 2.  
   Note that this takes SEVERAL DAYS to finish.
 * Call `docker compose down` to stop/interrupt the experiment.
@@ -29,7 +30,8 @@ We included a version with free solvers, that may yield slightly different resul
 * To manually use the code, enter the docker container via `docker compose exec regression bash` and just execute the code as desired.
 
 ## Local Usage
-* Install the requirements with any package manager you like. 
+If in doubt, use the method via docker as described above.
+* Install the requirements from `requirements.txt` with any package manager you like, e.g. `pip3 install -r requirements.txt`
 * Run `demo.py` with the desired parameters
   * `python3 demo.py --p 0.07 --m 404`  
   creates 404 equations with a contamination rate of 0.07.
@@ -55,7 +57,7 @@ The jupyter notebook attack.ipynb and additional scripts in attack/* contain the
 Install dependencies from requirements_attack.txt to run the attack notebook. Within the notebook the [attack data](https://zenodo.org/records/17291471) (power traces, classifier, signature data) as used in the paper may be downloaded to reproduce
 the paper's results. Further descriptions are found within the notebook and the helper scripts inside attack.
 
-The target device's firmware, wrapping the attacked impconvBA64_rec() function can be found in attack/firmware/firmware.c.
+The target device's firmware, wrapping the attacked `impconvBA64_rec()` function can be found in `attack/firmware/firmware.c`.
 
 The C and C++ code of the data generator is found in attack/data_generator. To compile the dependencies [libnpy](https://github.com/llohse/libnpy) and [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) need to be installed into attack/data_generator/extern, this can be done from within the notebook. Build using cmake for specified security level (DILITHIUM_MODE) by executing `export DILITHIUM_MODE=<2,3,5> && ./attack/data_generator/build.sh`. The output data (format) is described within the notebook (Section 2.1).
 
