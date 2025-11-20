@@ -13,6 +13,7 @@ The experiment was originally run with [Mosek](https://www.mosek.com/) as a solv
 We included a version with free solvers, that may yield slightly different results.
 
 ## Included Methods
+
 * Huber regression
 * Cauchy regression/Iterative Reweighted Least Squares
 * Ordinary least squares (OLS, L2-norm)
@@ -20,10 +21,13 @@ We included a version with free solvers, that may yield slightly different resul
 * Integer linear programming (ILP)
 
 ## Docker Usage [Recommended]
+
 * OPTIONAL: ensure that your Mosek licence is in the folder `~/mosek`, or adjust the `docker-compose.yml`
 * Go to the folder `regression`.
 * Call `docker compose up --build -d` to start/resume the large scale experiment for NIST-level 2.  
-  Note that this takes SEVERAL DAYS to finish.
+  * Note that this takes SEVERAL DAYS to finish.
+  * The database with the results and the plot are updated during this computation. So, intermediate data is available before the computation finishes.
+  * To get quicker results (but less accurate),  reduce the values `TIMEOUT` and `ATTEMPTS` in `regression.py`, or comment out ILP as a method in line 80.
 * Call `docker compose down` to stop/interrupt the experiment.
 * At the end, the folder `data` contains a database with the results and a PDF with the plot.
 * To run the experiment for other NIST-levels, change `NIST_LEVEL = 2` in `regression.py`
@@ -31,6 +35,7 @@ We included a version with free solvers, that may yield slightly different resul
 
 ## Local Usage
 If in doubt, use the method via docker as described above.
+
 * Install the requirements from `requirements.txt` with any package manager you like, e.g. `pip3 install -r requirements.txt`
 * Run `demo.py` with the desired parameters
   * `python3 demo.py --p 0.07 --m 404`  
@@ -46,11 +51,11 @@ Note that this code needs to generate signatures and save them to disk, before t
 
 Sample calls work like this:
 
-for generation:  
-`python3 simulation_umts24.py --experiment generate --filterthresh 9 --threshold 900000 --verbose`
-
-for soving:  
-`python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000`
+* install the requirements with `python3 -m pip install -r requirements.txt`
+* for generation:  
+  `python3 simulation_umts24.py --experiment generate --filterthresh 9 --threshold 900000 --verbose`
+* for soving:  
+  `python3 simulation_umts24.py --experiment solve --filterthresh 9 --threshold 900000 --verbose --stepsize 50000`
 
 # Attack on masked Dilithium
 The jupyter notebook attack.ipynb and additional scripts in attack/* contain the code to execute the attack against the first-order [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) [CGTZ23] for NIST security levels 2, 3 and 5 as described in the AsiaCrypt paper.

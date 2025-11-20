@@ -75,7 +75,7 @@ class ILWE():
 		self.eta = eta
 		self.tau = tau
 		self.log = []
-		self.solutions = {} # dictionary method-name -> soltuion data
+		self.solutions = {} # dictionary method-name -> solution data
 		self.methods = {
 				'ILP': self.ILP, # comment out ILP to speed up the overall process
 				'L1': self.L1,
@@ -294,6 +294,7 @@ def run_all():
 					break
 				m = (m_good + m_bad) >> 1
 				run_method(DIMENSION, m, p, ETA, TAU, cursor, conn, method)
+			plot(NIST_LEVEL)
 
 	conn.close()
 	plot(NIST_LEVEL)

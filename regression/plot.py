@@ -5,7 +5,7 @@ NIST_PARAMS = {2: (2,39), 3: (4,49), 5:(2,60)}
 
 def plot(level):
 	eta, tau = NIST_PARAMS[level]
-	database = 'runs.db'
+	database = 'data/runs.db'
 	conn = sqlite3.connect(database)
 	cursor = conn.cursor()
 	cursor.execute('select m,p, count(*), sum(s1) as ILP ,sum(s2) as L1,sum(s3) as huber,sum(s4) as cauchy, sum(s5) as L2 from compare where eta = ? and tau = ? group by m,p order by p, m;', (eta, tau))
