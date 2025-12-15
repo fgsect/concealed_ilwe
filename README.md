@@ -1,9 +1,19 @@
 Solving Concealed ILWE and its Application for Breaking Masked Dilithium
 ===
 
-The paper will be published as AsiaCrypt 2025. 
+The paper was published at AsiaCrypt 2025. 
 
 The paper and BibTex is available at https://eprint.iacr.org/2025/1629
+
+In this repository, we provide three main artifacts. 
+1. Comparison of regression methods ("regression"): 
+   This folder contains a docker image and all the code to rerun our simulated CILWE samples on the basis of Dilithium for all security levels (Figure 6 of the paper)
+2. Simulation of CILWE on Dilithium ("simulation_umts24"): 
+   This folder contains our simulated attack on Dilithium along the lines of UMTS24 (table 2 of the paper). 
+3. Attack on masked Dilithium ("attack"):
+   This folder contains the code for our machine learning aided side channel analysis of a first order masked Dilithium implementation.
+4. Regression Algorithms ("simulation_umts24"):
+   In this folder, we also provide a method that implements the Huber and Cauchy Regression in Python. Please refer to the last section of the readme for usage instructions.
 
 # Comparison of regression methods
 We investigated different regression methods for the Concealed Integer Learning with Errors (CILWE) problem.
@@ -45,7 +55,7 @@ If in doubt, use the method via docker as described above.
   starts the full-scale experiment and plots the result. 
     Note that this takes SEVERAL DAYS to finish.
 
-# Simulation of full attack
+# Simulation of CILWE on Dilithium
 The simulation_umts24 file provides the code to generate the Dilithium signatures, simulate a Machine learning Classifier as described by UMTS24 and run the attack with robust regressions. 
 Note that this code needs to generate signatures and save them to disk, before the attack can take place.
 
@@ -65,4 +75,19 @@ the paper's results. Further descriptions are found within the notebook and the 
 The target device's firmware, wrapping the attacked `impconvBA64_rec()` function can be found in `attack/firmware/firmware.c`.
 
 The C and C++ code of the data generator is found in attack/data_generator. To compile the dependencies [libnpy](https://github.com/llohse/libnpy) and [masked Dilithium implementation](https://github.com/fragerar/Masked_Dilithium) need to be installed into attack/data_generator/extern, this can be done from within the notebook. Build using cmake for specified security level (DILITHIUM_MODE) by executing `export DILITHIUM_MODE=<2,3,5> && ./attack/data_generator/build.sh`. The output data (format) is described within the notebook (Section 2.1).
+
+# Implementation of Regression Algorithms
+We provide our own implementation of the Huber and Cauchy Regression algorithms, which allow for a more fine-grained control than Scikit-Learn or statspy. If you want to use this, please import "irls" from "simulation_umts24/simulation_umts24". The syntax of the method works as follows:
+## Inputs
+* C: Data matrix or the matrix of all sample stacked together. Needs to have more rows than columns.
+* z: A vector / list of all dependent variables, i.e. the obseverd outputs z.
+* s: true value for estimator the secret. This is used in order to implement an early stopping if the correct secret is found. Note that this can be set to an arbitrary value if unknown.
+* loss: loss function to choose, supports "cauchy" (cauchy loss function) and "huber" (huber loss function).
+* iterations: stops after those iterations if it did not converge to the correct solution
+* huberparam: if huber loss is used, this is the parameter for the loss function ("delta"). It controls where the quadratic part is transitioned to the linear part. Can contain real values from $]0,\infty[$. The smaller the value is, the less independet errors are assumed (we chose 1/8, default choice for normal distribution is 1.35).
+
+##	Return Values
+The function returns two values:
+* s_hat: estimated regressor (estimated key for dilithium)
+* t: how many iterations have past?
 
