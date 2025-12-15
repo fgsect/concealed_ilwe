@@ -5,7 +5,7 @@ The paper was published at AsiaCrypt 2025.
 
 The paper and BibTex is available at https://eprint.iacr.org/2025/1629
 
-In this repository, we provide three main artifacts. 
+In this repository, we provide three main artifacts and and export function. 
 1. Comparison of regression methods ("regression"): 
    This folder contains a docker image and all the code to rerun our simulated CILWE samples on the basis of Dilithium for all security levels (Figure 6 of the paper)
 2. Simulation of CILWE on Dilithium ("simulation_umts24"): 
